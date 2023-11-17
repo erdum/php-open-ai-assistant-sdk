@@ -3,7 +3,7 @@
 
 A PHP class for seamless interaction with the OpenAI Assistant API, enabling developers to build powerful AI assistants capable of performing a variety of tasks. <br>
 
-<img width="600" height="400" src="banner.png" />
+<img width="800" height="400" src="banner.png" />
 
 ## Table of Contents
 

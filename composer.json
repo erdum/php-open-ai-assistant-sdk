@@ -1,0 +1,31 @@
+{
+    "name": "erdum/php-open-ai-assistant-sdk",
+    "description": "A PHP class for seamless interaction with the OpenAI Assistant API, enabling developers build powerful AI assistants capable of performing a variety of tasks.",
+    "type": "library",
+    "keywords": [
+        "openai",
+        "ai",
+        "assistant",
+        "api",
+        "conversation",
+        "messaging",
+        "function calling",
+        "sdk"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Erdum\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Erdum",
+            "email": "erdumadnan@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "ext-curl": "*"
+    }
+}

@@ -35,7 +35,7 @@ class OpenAIAssistant {
         ));
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to create a assistant');
+            throw new \Exception('Unable to create a assistant');
         }
         $this->assistant_id = $response['id'];
         return $response['id'];
@@ -44,7 +44,7 @@ class OpenAIAssistant {
     public function modify_assistant($name, $instructions, $tools)
     {
         if (!$this->assistant_id) {
-            throw new Exception(
+            throw new \Exception(
                 'You need to provide a assistant_id or create an assistant.'
             );
         }
@@ -57,7 +57,7 @@ class OpenAIAssistant {
         ));
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to create a assistant');
+            throw new \Exception('Unable to create a assistant');
         }
         $this->assistant_id = $response['id'];
         return $response['id'];
@@ -85,7 +85,7 @@ class OpenAIAssistant {
         ));
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to create a thread');
+            throw new \Exception('Unable to create a thread');
         }
         return $response['id'];
     }
@@ -95,7 +95,7 @@ class OpenAIAssistant {
         $response = $this->send_get_request("/threads/{$thread_id}");
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to retrive a thread');
+            throw new \Exception('Unable to retrive a thread');
         }
         return $response;
     }
@@ -128,7 +128,7 @@ class OpenAIAssistant {
         );
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to create a message');
+            throw new \Exception('Unable to create a message');
         }
         return $response['id'];
     }
@@ -138,7 +138,7 @@ class OpenAIAssistant {
         $response = $this->send_get_request("/threads/{$thread_id}/messages/{$message_id}");
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to retrive a message');
+            throw new \Exception('Unable to retrive a message');
         }
         return $response;
     }
@@ -218,7 +218,7 @@ class OpenAIAssistant {
                     'output' => json_encode($data)
                 ));
             } else {
-                throw new Exception("Failed to execute tool: The $method_name you provided is not callable");
+                throw new \Exception("Failed to execute tool: The $method_name you provided is not callable");
             }
         }
         $this->has_tool_calls = false;
@@ -233,7 +233,7 @@ class OpenAIAssistant {
         );
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to submit tool outputs');
+            throw new \Exception('Unable to submit tool outputs');
         }
 
         do {
@@ -260,12 +260,12 @@ class OpenAIAssistant {
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($errno = curl_errno($ch)) {
-            throw new Exception(
+            throw new \Exception(
                 'CURL failed to call OpenAI API: ' . curl_error($ch),
                 $errno
             );
         } else if ($http_code != 200) {
-            throw new Exception(
+            throw new \Exception(
                 "OpenAI API Returned Unexpected HTTP code $http_code"
             );
         }
@@ -316,7 +316,7 @@ class OpenAIAssistant {
         );
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to create a run');
+            throw new \Exception('Unable to create a run');
         }
         return $response['id'];
     }
@@ -326,7 +326,7 @@ class OpenAIAssistant {
         $response = $this->send_get_request("/threads/{$thread_id}/runs/{$run_id}");
 
         if (empty($response['id'])) {
-            throw new Exception('Unable to create a run');
+            throw new \Exception('Unable to create a run');
         }
         return $response;
     }

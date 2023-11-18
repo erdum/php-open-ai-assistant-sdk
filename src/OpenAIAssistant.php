@@ -266,7 +266,7 @@ class OpenAIAssistant {
             );
         } else if ($http_code != 200) {
             throw new \Exception(
-                "OpenAI API Returned Unexpected HTTP code $http_code"
+                "OpenAI API Returned Unexpected HTTP code $http_code. " . print_r($response, true)
             );
         }
         curl_close($ch);

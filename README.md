@@ -9,6 +9,7 @@ A PHP class for seamless interaction with the OpenAI Assistant API, enabling dev
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [API Reference](#api-reference)
 - [Feedback](#feedback)
 - [License](#license)
 
@@ -31,6 +32,11 @@ git clone https://github.com/erdum/php-open-ai-assistant-sdk.git
 require(__DIR__ . 'php-open-ai-assistant-sdk/src/OpenAIAssistant.php');
 
 use Erdum\OpenAIAssistant;
+
+$openai = new OpenAIAssistant(
+    $api_key,
+    $assistant_id
+);
 ```
     
 ## Usage
@@ -38,50 +44,70 @@ Currently, this usage example does not contain any information about OpenAI Assi
 ```php
 <?php
 
-$thread_id = $_SESSION[$session_id];
+require(__DIR__ . '/vendor/autoload.php');
+# require(__DIR__ . '/php-open-ai-assistant-sdk/src/OpenAIAssistant.php');
 
-try {
-    $openai = new OpenAIAssistant(
-        OpenAI-API-Key,
-        Assistant-ID
+use Erdum\OpenAIAssistant;
+
+$openai = new OpenAIAssistant(
+    $api_key,
+    $assistant_id
+);
+
+$thread_id = isset($_SESSION[$session_id]) ? $_SESSION[$session_id] : null;
+
+if (empty($thread_id)) {
+    $thread_id = $openai->create_thread($query);
+    $_SESSION[$session_id] = $thread_id;
+}
+
+$message_id = $openai->create_message($thread_id, 'Can you help me?');
+
+if ($message_id) $openai->run_thread($thread_id);
+
+if ($openai->has_tool_calls) {
+    $outputs = $openai->execute_tools(
+        $thread_id,
+        $openai->tool_call_id
     );
+    $openai->submit_tool_outputs(
+        $thread_id,
+        $openai->tool_call_id,
+        $outputs
+    );
+}
 
-    if (empty($thread_id)) {
-        $thread_id = $openai->create_thread();
-        $_SESSION[$session_id] = $thread_id;
+// Get the last recent message
+$message = $openai->list_messages($thread_id);
+$message = $message[0];
+$output = '';
+
+if ($message['role'] == 'assistant') {
+    foreach ($message['content'] as $msg) {
+        $output .= "{$msg['text']['value']}\n";
     }
-
-    $message_id = $openai->create_message($thread_id, 'I want to check my account balance');
-
-    if ($message_id) $openai->run_thread($thread_id);
-
-    if ($openai->has_tool_calls) {
-        $outputs = $openai->execute_tools(
-            $thread_id,
-            $openai->tool_call_id
-        );
-        $openai->submit_tool_outputs(
-            $thread_id,
-            $openai->tool_call_id,
-            $outputs
-        );
-    }
-
-    // Get the last recent message
-    $message = $openai->list_messages($thread_id);
-    $message = $message[0];
-    $output = '';
-
-    if ($message['role'] == 'assistant') {
-        foreach ($message['content'] as $msg) {
-            $output .= "{$msg['text']['value']}\n";
-        }
-        exit($output);
-    }
-} catch (Exception $err) {
-    echo($err);
+    exit($output);
 }
 ```
+## API Reference
+
+#### Create Assistant Object
+
+```php
+<?php
+
+use Erdum\OpenAIAssistant;
+
+$openai = new OpenAIAssistant($api_key);
+```
+
+| Parameter      | Type     | Description                                 |
+| :------------- | :------- | :----------                                 |
+| `api_key`      | `string` | **Required**. Your OpenAI API key           |
+| `assistant_id` | `string` | Assistant ID (default = null)               |
+| `base_url`     | `string` | OpenAI API base URL (default = 'https://api.openai.com/v1') |
+| `version_header` | `string` | OpenAI API version header (default = 'OpenAI-Beta: assistants=v1' ) |
+
 ## Feedback
 
 If you have any feedback, please reach out to us at erdumadnan@gmail.com

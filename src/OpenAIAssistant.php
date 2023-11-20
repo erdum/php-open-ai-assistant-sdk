@@ -201,6 +201,7 @@ class OpenAIAssistant {
         $run = $this->get_run($thread_id, $execution_id);
         $calls = $run['required_action']['submit_tool_outputs']['tool_calls'];
         $outputs = array();
+        $log_entry = '';
 
         foreach ($calls as $call) {
             $method_name = $call['function']['name'];
@@ -217,10 +218,12 @@ class OpenAIAssistant {
                     'tool_call_id' => $call['id'],
                     'output' => json_encode($data)
                 ));
+                $log_entry .= "$method_name -> " . print_r($method_args, true);
             } else {
                 throw new \Exception("Failed to execute tool: The $method_name you provided is not callable");
             }
         }
+        $this->write_log($log_entry);
         $this->has_tool_calls = false;
         return $outputs;
     }
@@ -231,6 +234,7 @@ class OpenAIAssistant {
             "/threads/{$thread_id}/runs/{$execution_id}/submit_tool_outputs",
             array('tool_outputs' => $outputs)
         );
+        $this->write_log("outputs -> " . print_r($outputs, true));
 
         if (empty($response['id'])) {
             throw new \Exception('Unable to submit tool outputs');
@@ -339,5 +343,18 @@ class OpenAIAssistant {
             return array();
         }
         return $response['data'];
+    }
+
+    private function write_log($message)
+    {
+        $logFile = __DIR__ . '/tool_calls_log';
+        $logEntry = date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL;
+
+        if ($fileHandle = fopen($logFile, 'a')) {
+            fwrite($fileHandle, $logEntry);
+            fclose($fileHandle);
+            return true;
+        }
+        return false;
     }
 }

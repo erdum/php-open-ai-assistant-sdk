@@ -88,6 +88,75 @@ if ($message['role'] == 'assistant') {
     exit($output);
 }
 ```
+### Create a new Assistant
+```php
+<?php
+
+require(__DIR__ . '/vendor/autoload.php');
+# require(__DIR__ . '/php-open-ai-assistant-sdk/src/OpenAIAssistant.php');
+
+use Erdum\OpenAIAssistant;
+
+$openai = new OpenAIAssistant($api_key);
+
+$openai->create_assistant(
+    'Customer Support Assistant',
+    'You are a customer support assistant of Telecom company. which is a wholesale DID numbers marketplace. You have to greet the customers and ask them how you can help them then understand their query and do the required operation. The functions and tools my required order-id in the arguments but don not ask the customers to provide their order-id because order-id will be included automatically to function calls.',
+    array(
+        array(
+            'type' => 'function',
+            'function' => array(
+                'name' => 'get_account_balance',
+                'description' => 'This function retrieves the account balance of the customer with the provided order-id.',
+                'parameters' => array(
+                    'type' => 'object',
+                    'properties' => array(
+                        'order_id' => array(
+                            'type' => 'string',
+                            'description' => 'The order-id of the customer.'
+                        )
+                    ),
+                    'required' => array('order_id')
+                ),
+            )
+        )
+    )
+);
+```
+### How PHP functions will be call
+
+Whatever function names you will provide in the tools array will be called in your PHP environment accordingly by the Assistant API, for example in the below code function "get_account_balance" should be present your PHP environment in order to be executed. If you want to run methods of an object or static methods of a class then you can provide additonal argument to "execute_tools" method 
+```php
+<?php
+
+// It will call function directly whatever you have provided at the time of Assistant creation
+$outputs = $openai->execute_tools(
+    $thread_id,
+    $openai->tool_call_id
+);
+
+// This will call methods on an instance of a class
+$myObj = new MyAPI();
+$outputs = $openai->execute_tools(
+    $thread_id,
+    $openai->tool_call_id,
+    $myObj
+);
+
+// This will call static methods of a class
+$outputs = $openai->execute_tools(
+    $thread_id,
+    $openai->tool_call_id,
+    'MyAPI'
+);
+
+$openai->submit_tool_outputs(
+    $thread_id,
+    $openai->tool_call_id,
+    $outputs
+);
+```
+
 ## API Reference
 
 #### Create Assistant Object

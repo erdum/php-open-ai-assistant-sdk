@@ -90,7 +90,7 @@ if ($message['role'] == 'assistant') {
 ```
 ### How PHP functions will be call
 
-Whatever function names you will provide in the tools array will be called in your PHP environment accordingly by the Assistant API, for example in the below code function "get_account_balance" should be present your PHP environment in order to be executed. If you want to run methods of an object or static methods of a class then you can provide additonal argument to "execute_tools" method 
+Whatever function names you will provide in the tools array will be called in your PHP environment accordingly by the Assistant API, for example in the below code function "get_account_balance" should be present in your PHP environment in order to be executed. If you want to run methods of an object or static methods of a class then you can provide additonal argument to "execute_tools" method 
 ```php
 <?php
 

@@ -88,6 +88,39 @@ if ($message['role'] == 'assistant') {
     exit($output);
 }
 ```
+### How PHP functions will be call
+
+Whatever function names you will provide in the tools array will be called in your PHP environment accordingly by the Assistant API, for example in the below code function "get_account_balance" should be present your PHP environment in order to be executed. If you want to run methods of an object or static methods of a class then you can provide additonal argument to "execute_tools" method 
+```php
+<?php
+
+// It will call function directly whatever you have provided at the time of Assistant creation
+$outputs = $openai->execute_tools(
+    $thread_id,
+    $openai->tool_call_id
+);
+
+// This will call methods on an instance of a class
+$myObj = new MyAPI();
+$outputs = $openai->execute_tools(
+    $thread_id,
+    $openai->tool_call_id,
+    $myObj
+);
+
+// This will call static methods of a class
+$outputs = $openai->execute_tools(
+    $thread_id,
+    $openai->tool_call_id,
+    'MyAPI'
+);
+
+$openai->submit_tool_outputs(
+    $thread_id,
+    $openai->tool_call_id,
+    $outputs
+);
+```
 ### Create a new Assistant
 ```php
 <?php
@@ -123,40 +156,6 @@ $openai->create_assistant(
     )
 );
 ```
-### How PHP functions will be call
-
-Whatever function names you will provide in the tools array will be called in your PHP environment accordingly by the Assistant API, for example in the below code function "get_account_balance" should be present your PHP environment in order to be executed. If you want to run methods of an object or static methods of a class then you can provide additonal argument to "execute_tools" method 
-```php
-<?php
-
-// It will call function directly whatever you have provided at the time of Assistant creation
-$outputs = $openai->execute_tools(
-    $thread_id,
-    $openai->tool_call_id
-);
-
-// This will call methods on an instance of a class
-$myObj = new MyAPI();
-$outputs = $openai->execute_tools(
-    $thread_id,
-    $openai->tool_call_id,
-    $myObj
-);
-
-// This will call static methods of a class
-$outputs = $openai->execute_tools(
-    $thread_id,
-    $openai->tool_call_id,
-    'MyAPI'
-);
-
-$openai->submit_tool_outputs(
-    $thread_id,
-    $openai->tool_call_id,
-    $outputs
-);
-```
-
 ## API Reference
 
 #### Create Assistant Object

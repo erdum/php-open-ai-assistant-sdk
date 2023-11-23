@@ -59,13 +59,12 @@ $thread_id = isset($_SESSION[$session_id]) ? $_SESSION[$session_id] : null;
 if (empty($thread_id)) {
     $thread_id = $openai->create_thread($query);
     $_SESSION[$session_id] = $thread_id;
+} else {
+    $openai->add_message($thread_id, 'Can you help me?');
 }
+$openai->run_thread($thread_id);
 
-$message_id = $openai->create_message($thread_id, 'Can you help me?');
-
-if ($message_id) $openai->run_thread($thread_id);
-
-if ($openai->has_tool_calls) {
+while ($openai->has_tool_calls) {
     $outputs = $openai->execute_tools(
         $thread_id,
         $openai->tool_call_id

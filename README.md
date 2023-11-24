@@ -90,11 +90,11 @@ if ($message['role'] == 'assistant') {
 ```
 ### How PHP functions will be called
 
-Whatever function names you provide in the tools array will be called in your PHP environment accordingly by the Assistant API, for example in the below code function "get_account_balance" should be present in your PHP environment in order to be executed. If you want to run methods of an object or static methods of a class then you can provide additonal argument to "execute_tools" method 
+Whatever function names you provide in the tools array will be called in your PHP environment accordingly by the Assistant API, for example in the below code function "get_account_balance" should be present in your PHP environment in order to be executed. If you want to run methods of an object or static methods of a class then you can provide an additional argument to the "execute_tools" method 
 ```php
 <?php
 
-// It will call the function directly whatever you have provided at the time of Assistant creation
+// It will call the function directly whatever you have provided to the Assistant
 $outputs = $openai->execute_tools(
     $thread_id,
     $openai->tool_call_id
@@ -134,7 +134,7 @@ $openai = new OpenAIAssistant($api_key);
 
 $openai->create_assistant(
     'Customer Support Assistant',
-    'You are a customer support assistant of Telecom company. which is a wholesale DID numbers marketplace. You have to greet the customers and ask them how you can help them then understand their query and do the required operation. The functions and tools may require order-id in the arguments but do not ask the customers to provide their order-id because order-id will be included automatically to function calls.',
+    'You are a customer support assistant of an Telecom company. which is a wholesale DID numbers marketplace. You have to greet the customers and ask them how you can help them then understand their query and do the required operation. The functions and tools may require order-id in the arguments but do not ask the customers to provide their order-id because order-id will be included automatically to function calls.',
     array(
         array(
             'type' => 'function',

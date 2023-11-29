@@ -77,7 +77,7 @@ while ($openai->has_tool_calls) {
 }
 
 // Get the last recent message
-$message = $openai->list_messages($thread_id);
+$message = $openai->list_thread_messages($thread_id);
 $message = $message[0];
 $output = '';
 
